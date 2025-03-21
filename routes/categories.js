@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 let categoryModel = require('../schemas/category')
-
+let { check_authentication, check_authorization } = require('../utils/check_auth');
+let { ADMIN_PERMISSION, MOD_PERMISSION } = require('../utils/constants');
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
@@ -30,7 +31,7 @@ router.get('/:id', async function(req, res, next) {
   }
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', check_authentication, check_authorization(MOD_PERMISSION), async function(req, res, next) {
   try {
     let newCategory = new categoryModel({
       name: req.body.name,
